@@ -1,0 +1,3 @@
+/nginx/nginx-selfsigned.crt
+/nginx/nginx-selfsigned.key
+/nginx/dhparam.pem
