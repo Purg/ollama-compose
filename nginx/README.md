@@ -13,7 +13,7 @@ Question Answers Used:
 - Locality Name (eg, city) []:Clifton Park
 - Organization Name (eg, company) [Internet Widgits Pty Ltd]:Kitware, Inc.
 - Organizational Unit Name (eg, section) []:Computer Vision
-- Common Name (e.g. server FQDN or YOUR name) []:rivellon.kitware.com
+- Common Name (e.g. server FQDN or YOUR name) []:localhost
 - Email Address []:paul.tunison@kitware.com
 
 # 2

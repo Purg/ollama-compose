@@ -8,7 +8,7 @@ services:
       - ollama_data:/root/.ollama
     #ports:
     #  # Standard port for Ollama. Don't really want to expose this unencrypted.
-    #  - 11434:11434
+    #  - 127.0.0.1:11434:11434
     deploy:
       resources:
         reservations:
@@ -24,7 +24,7 @@ services:
       - open_webui_backend_data:/app/backend/data
     #ports:
     #  # Port exposure for Open-WebUI. Don't really want to expose this unencrypted.
-    #  - 16462:8080
+    #  - 127.0.0.1:16462:8080
     environment:
       # Not using SSL because we're within the docker network.
       OLLAMA_BASE_URL: http://ollama:11434
@@ -44,8 +44,8 @@ services:
       - ./nginx/dhparam.pem:/etc/ssl/certs/dhparam.pem:ro
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
-      - 443:443
-      - 80:80
+      - 127.0.0.1:443:443
+      - 127.0.0.1:80:80
     restart: unless-stopped
 
 volumes:
