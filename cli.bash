@@ -19,19 +19,27 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Pass-through arguments to the docker-compose command, unless no arguments
-# were passed, in which case we default to "up"
-echo "Number?: " ${#@}
-if [[ "${#@}" -eq 0 ]]
-then
-  ARGS=( "up" "-d" )
-  >&2 echo "[ INFO ] No arguments passed, assuming \"${ARGS[*]}\"."
-else
-  ARGS=( "$@" )
-fi
+function shutdown
+{
+  docker compose \
+    -f "${SCRIPT_DIR}"/docker-compose.yaml \
+    --env-file "${SCRIPT_DIR}"/.env \
+    --profile ollama-cli \
+    down
+}
+
+trap shutdown EXIT
+
+# Start another ollama service with network exposure attached to the same
+# volume.
+docker compose \
+  -f "${SCRIPT_DIR}"/docker-compose.yaml \
+  --env-file "${SCRIPT_DIR}"/.env \
+  --profile ollama-cli \
+  up -d
 
 docker compose \
   -f "${SCRIPT_DIR}"/docker-compose.yaml \
   --env-file "${SCRIPT_DIR}"/.env \
-  --profile offline \
-  "${ARGS[@]}"
+  --profile ollama-cli \
+  exec ollama-cli bash

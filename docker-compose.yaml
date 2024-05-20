@@ -6,9 +6,9 @@ services:
     image: ollama/ollama:${OLLAMA_IMAGE_VERSION}
     volumes:
       - ollama_data:/root/.ollama
-    #ports:
-    #  # Standard port for Ollama. Don't really want to expose this unencrypted.
-    #  - 127.0.0.1:11434:11434
+    ports:
+      # Standard port for Ollama. Don't really want to expose this unencrypted.
+      - 127.0.0.1:11434:11434
     deploy:
       resources:
         reservations:
@@ -17,6 +17,10 @@ services:
               driver: nvidia
               count: all
     restart: unless-stopped
+    networks:
+      - restricted_internal
+    profiles:
+      - offline
 
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
@@ -31,6 +35,10 @@ services:
     depends_on:
       - ollama
     restart: unless-stopped
+    networks:
+      - restricted_internal
+    profiles:
+      - offline
 
   # Hide Ollama and Open-WebUI behind self-signed reverse proxies.
   reverse-proxy:
@@ -47,6 +55,28 @@ services:
       - 127.0.0.1:443:443
       - 127.0.0.1:80:80
     restart: unless-stopped
+    networks:
+      - restricted_internal
+    profiles:
+      - offline
+
+  # Service also connected to the same volumes as ollama but is on an
+  # internet-accessible network
+  ollama-cli:
+    image: ollama/ollama:${OLLAMA_IMAGE_VERSION}
+    volumes:
+      - ollama_data:/root/.ollama
+    profiles:
+      - ollama-cli
+
+networks:
+  restricted_internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.128.0.0/16
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "false"
 
 volumes:
   ollama_data:
