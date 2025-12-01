@@ -63,3 +63,27 @@ block for the docker network created that should be assigned so that this
 becomes deterministic instead.
 The `ollama`, `open-webui` and `reverse-proxy` services are a part of this
 `restricted_internal` network.
+
+# Setting CGroupFS Driver
+[Trouble shooting page from NVIDIA](
+https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/troubleshooting.html#containers-losing-access-to-gpus-with-error-failed-to-initialize-nvml-unknown-error).
+
+You might encounter that after running the ollama container for a while it
+seems like your GPUs have "disconnected":
+  * Attempting to run `nvidia-smi` from within the container fails, responding
+    with "Failed to initialize NVML: Unknown Error".
+  * New Ollama model instantiations proceed to use the CPU instead of any GPUs
+    causing very slow processing performance.
+
+Example `/etc/docker/deamon.json` file with this change:
+```json
+{
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    },
+    "exec-opts": ["native.cgroupdriver=cgroupfs"]
+}
+```
