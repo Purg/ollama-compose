@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#
+# Start or manipulate the ollama-compose stack.
+#
+# This script could be symlinked into somewhere accessible to the PATH for
+# convenience.
+#
+set -e -o pipefail
+
+SCRIPT_ABS_PATH="$(realpath "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "${SCRIPT_ABS_PATH}")" && pwd)"
+
+SCRIPT_PARAMS=( up -d )
+if [[ "$#" -gt 0 ]]
+then
+  #echo "Using provided parameters: $*"
+  SCRIPT_PARAMS=( "$@" )
+fi
+
+#echo "Final params? " "${SCRIPT_PARAMS[@]}"
+"${SCRIPT_DIR}"/run.bash "${SCRIPT_PARAMS[@]}"
