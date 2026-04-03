@@ -21,7 +21,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Pass-through arguments to the docker-compose command, unless no arguments
 # were passed, in which case we default to "up"
-echo "Number?: " ${#@}
 if [[ "${#@}" -eq 0 ]]
 then
   ARGS=( "up" "-d" )
